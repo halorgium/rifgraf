@@ -1,5 +1,5 @@
-require 'sinatra'
-require 'sequel'
+require "sinatra"
+require "sequel"
 
 module Points
 	def self.data
@@ -7,7 +7,7 @@ module Points
 	end
 
 	def self.make
-		db = Sequel.connect(ENV['DATABASE_URL'] || 'sqlite://rifgraf.db')
+		db = Sequel.connect(ENV["DATABASE_URL"] || "sqlite://rifgraf.db")
 		make_table(db)
 		db[:points]
 	end
@@ -45,7 +45,9 @@ get "/:graph" do
 end
 
 post "/:graph" do
-	Points.data << { :graph => params[:graph], :timestamp => (params[:timestamp] || Time.now), :value => params[:value] }
+	Points.data << { :graph => params[:graph],
+    :timestamp  => (params[:timestamp] || Time.now),
+    :value      => params[:value] }
 	status 201
 end
 
