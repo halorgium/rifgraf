@@ -23,26 +23,32 @@ module Points
 	end
 end
 
-get "/:id" do
-	throw :halt, [ 404, "No such graph" ] unless Points.data.filter(:graph => params[:id]).count > 0
+helpers do
+  def graph
+    @graph ||= Points.data.filter(:graph => params[:graph])
+  end
+end
+
+get "/:graph" do
+	throw :halt, [ 404, "No such graph" ] unless graph.count > 0
 
   case env["HTTP_ACCEPT"]
   when "text/html"
-    erb :graph, :locals => { :id => params[:id] }
+    erb :graph, :locals => { :id => params[:graph] }
   when "text/csv"
-    erb :data, :locals => { :points => Points.data.filter(:graph => params[:id]).reverse_order(:timestamp) }
+    erb :data, :locals => { :points => graph.reverse_order(:timestamp) }
   when "application/xml"
-    erb :amstock_settings, :locals => { :id => params[:id] }
+    erb :amstock_settings, :locals => { :id => params[:graph] }
   else
     status 415
   end
 end
 
-post "/:id" do
-	Points.data << { :graph => params[:id], :timestamp => (params[:timestamp] || Time.now), :value => params[:value] }
+post "/:graph" do
+	Points.data << { :graph => params[:graph], :timestamp => (params[:timestamp] || Time.now), :value => params[:value] }
 	status 201
 end
 
-delete "/:id" do
-	Points.data.filter(:graph => params[:id]).delete
+delete "/:graph" do
+  graph.delete
 end
