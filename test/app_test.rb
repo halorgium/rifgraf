@@ -7,7 +7,7 @@ class AppTest < Test::Unit::TestCase
 
   def create_graph
     post "/graphs/my_graph", :timestamp => Time.mktime(2008, 04, 07), :value => 10
-    assert ok?
+    assert status == 201
   end
 
   def setup

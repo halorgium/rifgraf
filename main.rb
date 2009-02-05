@@ -42,7 +42,7 @@ end
 
 post '/graphs/:id' do
 	Points.data << { :graph => params[:id], :timestamp => (params[:timestamp] || Time.now), :value => params[:value] }
-	"ok"
+	status 201
 end
 
 delete '/graphs/:id' do
