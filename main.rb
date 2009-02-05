@@ -23,24 +23,24 @@ module Points
 	end
 end
 
-get '/graphs/:id' do
+get "/:id" do
 	throw :halt, [ 404, "No such graph" ] unless Points.data.filter(:graph => params[:id]).count > 0
 	erb :graph, :locals => { :id => params[:id] }
 end
 
-get '/graphs/:id/amstock_settings.xml' do
+get "/:id/amstock_settings.xml" do
 	erb :amstock_settings, :locals => { :id => params[:id] }
 end
 
-get '/graphs/:id/data.csv' do
+get "/:id/data.csv" do
 	erb :data, :locals => { :points => Points.data.filter(:graph => params[:id]).reverse_order(:timestamp) }
 end
 
-post '/graphs/:id' do
+post "/:id" do
 	Points.data << { :graph => params[:id], :timestamp => (params[:timestamp] || Time.now), :value => params[:value] }
 	status 201
 end
 
-delete '/graphs/:id' do
+delete "/:id" do
 	Points.data.filter(:graph => params[:id]).delete
 end
