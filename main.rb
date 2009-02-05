@@ -24,6 +24,10 @@ module Points
 end
 
 helpers do
+  def format
+    @format ||= params["format"] || env["HTTP_ACCEPT"].to_s.split("/").last
+  end
+
   def graph
     @graph ||= Points.data.filter(:graph => params[:graph])
   end
@@ -36,15 +40,18 @@ helpers do
   end
 end
 
-get "/:graph" do
-	throw :halt, [ 404, "No such graph" ] unless graph.count > 0
+get "/:graph.?:format?" do
+	halt 404 unless graph.count > 0
 
-  case env["HTTP_ACCEPT"]
-  when "text/html"
+  case format
+  when "html"
+    content_type :html
     erb :graph, :locals => { :id => params[:graph] }
-  when "text/csv"
+  when "csv"
+    content_type :csv
     to_csv(graph.reverse_order(:timestamp))
-  when "application/xml"
+  when "xml"
+    content_type :xml
     erb :amstock_settings, :locals => { :id => params[:graph] }
   else
     status 415

@@ -16,6 +16,8 @@ class AppTest < Test::Unit::TestCase
     true
   end
 
+  alias_method :teardown, :setup
+
   def test_it_deletes_graph
     create_graph
 
@@ -30,11 +32,14 @@ class AppTest < Test::Unit::TestCase
     create_graph
 
     get "/my_graph", :env => {"HTTP_ACCEPT" => "text/html"}
-    assert_equal "text/html", headers["Content-Type"]
+    assert headers["Content-Type"] == "text/html"
     assert body =~ /flashcontent/
+  end
 
+  def test_it_provides_xml_representation_of_graph
     get "/my_graph", :env => {"HTTP_ACCEPT" => "application/xml"}
     assert ok?
+    assert headers["Content-Type"] == "application/xml"
     assert body.start_with?("<settings>")
   end
 
@@ -43,6 +48,7 @@ class AppTest < Test::Unit::TestCase
     post "/my_graph", :timestamp => Time.mktime(2009, 10, 10), :value => 50
 
     get "/my_graph", :env => {"HTTP_ACCEPT" => "text/csv"}
+    assert headers["Content-Type"] == "text/csv"
     assert_equal body, "2009-10-10 00:00:00,0,50\n2008-04-07 00:00:00,0,10\n"
   end
 
