@@ -25,15 +25,17 @@ end
 
 get "/:id" do
 	throw :halt, [ 404, "No such graph" ] unless Points.data.filter(:graph => params[:id]).count > 0
-	erb :graph, :locals => { :id => params[:id] }
-end
 
-get "/:id/amstock_settings.xml" do
-	erb :amstock_settings, :locals => { :id => params[:id] }
-end
-
-get "/:id/data.csv" do
-	erb :data, :locals => { :points => Points.data.filter(:graph => params[:id]).reverse_order(:timestamp) }
+  case env["HTTP_ACCEPT"]
+  when "text/html"
+    erb :graph, :locals => { :id => params[:id] }
+  when "text/csv"
+    erb :data, :locals => { :points => Points.data.filter(:graph => params[:id]).reverse_order(:timestamp) }
+  when "application/xml"
+    erb :amstock_settings, :locals => { :id => params[:id] }
+  else
+    status 415
+  end
 end
 
 post "/:id" do

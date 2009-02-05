@@ -16,13 +16,6 @@ class AppTest < Test::Unit::TestCase
     true
   end
 
-  def test_it_stores_graph
-    create_graph
-
-    get "/my_graph"
-    assert ok?
-  end
-
   def test_it_deletes_graph
     create_graph
 
@@ -36,11 +29,11 @@ class AppTest < Test::Unit::TestCase
   def test_it_provides_html_representation_of_graph
     create_graph
 
-    get "/my_graph"
+    get "/my_graph", :env => {"HTTP_ACCEPT" => "text/html"}
     assert_equal "text/html", headers["Content-Type"]
     assert body =~ /flashcontent/
 
-    get "/my_graph/amstock_settings.xml"
+    get "/my_graph", :env => {"HTTP_ACCEPT" => "application/xml"}
     assert ok?
     assert body.start_with?("<settings>")
   end
@@ -48,7 +41,14 @@ class AppTest < Test::Unit::TestCase
   def test_it_provides_csv_representation_of_graph
     create_graph
 
-    get "/my_graph/data.csv"
+    get "/my_graph", :env => {"HTTP_ACCEPT" => "text/csv"}
     assert body == "2008-04-07 00:00:00,0,10\n\n" # TODO: no \n
+  end
+
+  def test_it_returns_415_for_unsupported_representation_of_graph
+    create_graph
+
+    get "/my_graph", :env => {"HTTP_ACCEPT" => "text/css"}
+    assert status == 415
   end
 end
