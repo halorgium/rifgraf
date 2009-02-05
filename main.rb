@@ -27,6 +27,13 @@ helpers do
   def graph
     @graph ||= Points.data.filter(:graph => params[:graph])
   end
+
+  def to_csv(points)
+    points.inject("") { |s, p|
+      s << p[:timestamp].strftime("%Y-%m-%d %H:%M:%S").to_s +
+        ",0," + p[:value] + "\n"
+    }
+  end
 end
 
 get "/:graph" do
@@ -36,7 +43,7 @@ get "/:graph" do
   when "text/html"
     erb :graph, :locals => { :id => params[:graph] }
   when "text/csv"
-    erb :data, :locals => { :points => graph.reverse_order(:timestamp) }
+    to_csv(graph.reverse_order(:timestamp))
   when "application/xml"
     erb :amstock_settings, :locals => { :id => params[:graph] }
   else

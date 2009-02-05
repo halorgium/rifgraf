@@ -40,9 +40,10 @@ class AppTest < Test::Unit::TestCase
 
   def test_it_provides_csv_representation_of_graph
     create_graph
+    post "/my_graph", :timestamp => Time.mktime(2009, 10, 10), :value => 50
 
     get "/my_graph", :env => {"HTTP_ACCEPT" => "text/csv"}
-    assert body == "2008-04-07 00:00:00,0,10\n\n" # TODO: no \n
+    assert_equal body, "2009-10-10 00:00:00,0,50\n2008-04-07 00:00:00,0,10\n"
   end
 
   def test_it_returns_415_for_unsupported_representation_of_graph
