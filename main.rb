@@ -72,16 +72,14 @@ end
 __END__
 
 @@ graph
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>rifgraf | <%= id %></title>
+  <title>rifgraf | <%= id %></title>
 </head>
 <body>
 <script type="text/javascript" src="/swfobject.js"></script>
-<div id="flashcontent">
-<strong>The graph isn't loading.  It requires Flash, maybe you don't have it.</strong>
-</div>
+<p id="flashcontent"><strong>The graph isn't loading.</strong></p>
 <script type="text/javascript">
 // <![CDATA[
 var so = new SWFObject("/amstock.swf", "amline", "100%", "100%", "8", "#FFFFFF");
@@ -91,6 +89,7 @@ so.write("flashcontent");
 // ]]>
 </script>
 </body>
+</html>
 
 @@ settings
 <settings>
