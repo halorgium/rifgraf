@@ -32,9 +32,6 @@ module RifGraf
       halt(404, "No such graph") unless graph.count > 0
 
       case format
-      when "html"
-        content_type :html
-        erb :graph, :locals => { :id => params[:graph] }
       when "csv"
         content_type :csv
         to_csv(graph.reverse_order(:timestamp))
@@ -42,7 +39,8 @@ module RifGraf
         content_type :xml
         erb :settings, :locals => { :id => params[:graph] }
       else
-        status 415
+        content_type :html
+        erb :graph, :locals => { :id => params[:graph] }
       end
     end
 
@@ -59,9 +57,7 @@ module RifGraf
 
     protected
       def format
-        @format ||= params["format"] ||
-          env["HTTP_ACCEPT"].to_s.split("/").last ||
-          "html"
+        @format ||= params["format"] || env["HTTP_ACCEPT"].split("/").last
       end
 
       def graph
