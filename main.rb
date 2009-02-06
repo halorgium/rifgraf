@@ -2,25 +2,25 @@ require "sinatra"
 require "sequel"
 
 module Points
-	def self.data
-		@@data ||= make
-	end
+  def self.data
+    @@data ||= make
+  end
 
-	def self.make
-		db = Sequel.connect(ENV["DATABASE_URL"] || "sqlite://rifgraf.db")
-		make_table(db)
-		db[:points]
-	end
+  def self.make
+    db = Sequel.connect(ENV["DATABASE_URL"] || "sqlite://rifgraf.db")
+    make_table(db)
+    db[:points]
+  end
 
-	def self.make_table(db)
-		db.create_table :points do
-			varchar :graph, :size => 32
-			varchar :value, :size => 32
-			timestamp :timestamp
-		end
-	rescue Sequel::DatabaseError
-		# assume table already exists
-	end
+  def self.make_table(db)
+    db.create_table :points do
+      varchar :graph, :size => 32
+      varchar :value, :size => 32
+      timestamp :timestamp
+    end
+  rescue Sequel::DatabaseError
+    # assume table already exists
+  end
 end
 
 helpers do
@@ -41,7 +41,7 @@ helpers do
 end
 
 get "/:graph.?:format?" do
-	halt 404 unless graph.count > 0
+  halt 404 unless graph.count > 0
 
   case format
   when "html"
@@ -59,10 +59,10 @@ get "/:graph.?:format?" do
 end
 
 post "/:graph" do
-	Points.data << { :graph => params[:graph],
+  Points.data << { :graph => params[:graph],
     :timestamp  => (params[:timestamp] || Time.now),
     :value      => params[:value] }
-	status 201
+  status 201
 end
 
 delete "/:graph" do
