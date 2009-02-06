@@ -1,6 +1,6 @@
 require "test/unit"
 require "sinatra/test"
-require File.dirname(__FILE__) + "/../main"
+require File.dirname(__FILE__) + "/../app"
 
 class AppTest < Test::Unit::TestCase
   include Sinatra::Test
