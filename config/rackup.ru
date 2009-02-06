@@ -1,6 +1,7 @@
-require File.dirname(__FILE__) + "/../main.rb"
+require "rubygems"
+require File.dirname(__FILE__) + "/../app"
 
-set_option :run, false
-set_option :env, ENV['APP_ENV'] || :production
+RifGraf::App.set :env, ENV["APP_ENV"] || :production
+RifGraf::App.disable :reload
 
-run Sinatra.application
+run RifGraf::App
