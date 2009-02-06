@@ -11,6 +11,7 @@ class AppTest < Test::Unit::TestCase
   end
 
   def setup
+    @app = RifGraf::App
     File.delete(File.dirname(__FILE__) + "/../rifgraf.db")
   rescue Errno::ENOENT
     true
@@ -25,6 +26,7 @@ class AppTest < Test::Unit::TestCase
     assert ok?
 
     get "/my_graph"
+    assert body == "No such graph"
     assert not_found?
   end
 
@@ -32,11 +34,14 @@ class AppTest < Test::Unit::TestCase
     create_graph
 
     get "/my_graph", :env => {"HTTP_ACCEPT" => "text/html"}
+    assert ok?
     assert headers["Content-Type"] == "text/html"
     assert body =~ /flashcontent/
   end
 
   def test_it_provides_xml_representation_of_graph
+    create_graph
+
     get "/my_graph", :env => {"HTTP_ACCEPT" => "application/xml"}
     assert ok?
     assert headers["Content-Type"] == "application/xml"
@@ -48,14 +53,8 @@ class AppTest < Test::Unit::TestCase
     post "/my_graph", :timestamp => Time.mktime(2009, 10, 10), :value => 50
 
     get "/my_graph", :env => {"HTTP_ACCEPT" => "text/csv"}
+    assert ok?
     assert headers["Content-Type"] == "text/csv"
-    assert_equal body, "2009-10-10 00:00:00,0,50\n2008-04-07 00:00:00,0,10\n"
-  end
-
-  def test_it_returns_415_for_unsupported_representation_of_graph
-    create_graph
-
-    get "/my_graph", :env => {"HTTP_ACCEPT" => "text/css"}
-    assert status == 415
+    assert_equal body, "2009-10-10 00:00:00,0,50\n2008-04-07 00:00:00,0,10"
   end
 end
