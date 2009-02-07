@@ -55,6 +55,10 @@ module RifGraf
       graph.delete
     end
 
+    get "/" do
+      %q{This is <a href="http://github.com/sr/rifgraf">sr/rifgraf</a>.}
+    end
+
     protected
       def format
         @format ||= params["format"] || env["HTTP_ACCEPT"].split("/").last

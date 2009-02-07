@@ -19,6 +19,12 @@ class AppTest < Test::Unit::TestCase
 
   alias_method :teardown, :setup
 
+  def test_it_provides_a_little_explanation
+    get "/"
+    assert ok?
+    assert body =~ /This is/
+  end
+
   def test_it_deletes_graph
     create_graph
 
