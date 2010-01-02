@@ -2,24 +2,25 @@ module Rifgraf
   class App < Sinatra::Base
     set :views,   File.dirname(__FILE__) + "/views"
 
-    get "/:graph" do
-      halt(404, "No such graph: #{graph_name.inspect}") unless graph.count > 0
+    get "/:graphs" do
+      halt(404, "No graphs specified") unless graphs.count > 0
 
       case format
-      when "csv"
-        content_type :csv
-        to_csv(graph.reverse_order(:timestamp))
       when "json"
         content_type :json
-        data = graph.reverse_order(:timestamp).map do |point|
-          timestamp = point[:timestamp].to_i * 1000
-          value     = point[:value]
-          [timestamp, value]
+        data = []
+        graphs.each do |name,points|
+          d = points.reverse_order(:timestamp).map do |point|
+            timestamp = point[:timestamp].to_i * 1000
+            value     = point[:value]
+            [timestamp, value]
+          end
+          data << {:label => name, :data => d}
         end
-        {:label => graph_name, :data => data}.to_json
+        {:graphs => data}.to_json
       else
         content_type :html
-        erb :graph, :locals => { :id => params[:graph] }
+        erb :graph
       end
     end
 
@@ -41,7 +42,7 @@ module Rifgraf
 
     protected
       def format
-        @format ||= params["format"] || env["HTTP_ACCEPT"].split(",").first.split("/").last
+        @format ||= params["format"] || env["HTTP_ACCEPT"].split(",").first.split("/").last || "html"
       end
 
       def graph_name
@@ -49,13 +50,27 @@ module Rifgraf
       end
 
       def graph
-        @graph ||= Points.data.filter(:graph => graph_name)
+        @graph ||= graph_for(graph_name)
       end
 
-      def to_csv(points)
-        points.inject([]) { |csv, p|
-          csv << p[:timestamp].strftime("%Y-%m-%d %H:%M:%S") + ",0,#{p[:value]}"
-        }.join("\n")
+      def graph_for(name)
+        Points.data.filter(:graph => name)
+      end
+
+      def graph_names
+        params[:graphs].split(",")
+      end
+
+      def graphs
+        @graphs ||= load_graphs
+      end
+
+      def load_graphs
+        g = {}
+        graph_names.map do |name|
+          g[name] = graph_for(name)
+        end
+        g
       end
   end
 end

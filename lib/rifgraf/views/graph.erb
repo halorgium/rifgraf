@@ -2,7 +2,7 @@
 <html>
  <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>rifgraf | <%= graph_name %></title>
+    <title>rifgraf | <%= graph_names.join(" | ") %></title>
     <link href="css/layout.css" rel="stylesheet" type="text/css"></link>
     <!--[if IE]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
     <script language="javascript" type="text/javascript" src="js/jquery.min.js"></script>
@@ -15,7 +15,7 @@
    <div id="overview" style="margin-left:50px;margin-top:20px;width:400px;height:50px"></div>
 
    <script language="javascript" type="text/javascript">
-     var graphName = "<%= graph_name %>";
+     var graphNames = <%= graph_names.to_json %>;
    </script>
    <script id="source" language="javascript" type="text/javascript" src="js/rifgraf.js"></script>
  </body>
