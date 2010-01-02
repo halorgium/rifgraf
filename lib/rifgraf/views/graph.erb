@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>rifgraf | <%= graph_name %></title>
+    <link href="css/layout.css" rel="stylesheet" type="text/css"></link>
+    <!--[if IE]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="js/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
+    <script language="javascript" type="text/javascript" src="js/jquery.flot.selection.min.js"></script>
+ </head>
+
+ <body>
+   <div id="fullgraph" style="width:600px;height:300px;"></div>
+   <div id="overview" style="margin-left:50px;margin-top:20px;width:400px;height:50px"></div>
+
+   <script language="javascript" type="text/javascript">
+     var graphName = "<%= graph_name %>";
+   </script>
+   <script id="source" language="javascript" type="text/javascript" src="js/rifgraf.js"></script>
+ </body>
+</html>
